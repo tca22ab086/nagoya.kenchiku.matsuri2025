@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>縦型5:4フォトフレームカメラ</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="camera-container">
+  <video id="camera" autoplay playsinline></video>
+  <img id="frame" alt="フォトフレーム">
+  <canvas id="canvas"></canvas>
+
+  <div id="buttons">
+    <button id="start-camera">📷 カメラを起動</button>
+    <button id="capture-button">📸 撮影</button>
+  </div>
+
+  <div id="share-area">
+    <p>#なごや建築まつり2025</p>
+    <button id="instagram-button">Instagramで投稿</button>
+  </div>
+</div>
+
+<script>
+const video = document.getElementById('camera');
+const canvas = document.getElementById('canvas');
+const frame = document.getElementById('frame');
+const startButton = document.getElementById('start-camera');
+const captureButton = document.getElementById('capture-button');
+const shareArea = document.getElementById('share-area');
+const instagramButton = document.getElementById('instagram-button');
+
+// URLパラメータからフレーム番号を取得
+const urlParams = new URLSearchParams(window.location.search);
+let frameNum = urlParams.get('frame') || '01'; // デフォルトは01
+frame.src = `frames/frame${String(frameNum).padStart(2,'0')}.png`;
+
+// 初期表示は非表示
+video.style.display = 'none';
+frame.style.display = 'none';
+canvas.style.display = 'none';
+captureButton.style.display = 'none';
+shareArea.style.display = 'none';
+
+// カメラ起動
+startButton.addEventListener('click', async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+    video.srcObject = stream;
+    video.style.display = 'block';
+    frame.style.display = 'block';
+    captureButton.style.display = 'inline-block';
+    startButton.style.display = 'none';
+  } catch(err) {
+    alert("カメラが利用できません: " + err);
+  }
+});
+
+// 撮影
+captureButton.addEventListener('click', () => {
+  const frameAspect = 5 / 4;
+  const height = video.videoHeight;
+  const width = height / frameAspect;
+
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+
+  const sx = (video.videoWidth - width) / 2;
+  ctx.drawImage(video, sx, 0, width, height);
+  ctx.drawImage(frame, 0, 0, width, height);
+
+  // 自動ダウンロード
+  const link = document.createElement('a');
+  link.download = `photo_frame.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+
+  // SNS共有ボタン表示
+  shareArea.style.display = 'block';
+});
+
+// Instagram投稿誘導
+instagramButton.addEventListener('click', () => {
+  const hashtag = "なごや建築まつり2025";
+  const url = `https://www.instagram.com/explore/tags/${encodeURIComponent(hashtag)}/`;
+  window.open(url, "_blank");
+});
+</script>
+
+</body>
+</html>
