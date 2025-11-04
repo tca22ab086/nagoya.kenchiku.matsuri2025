@@ -1,0 +1,64 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  text-align: center;
+  background-color: #000;
+}
+
+#camera-container {
+  position: relative;
+  width: 100vw;
+  height: calc(100vw * 5 / 4);
+  max-height: 100vh;
+  margin: 0 auto;
+  overflow: hidden;
+  background-color: #000;
+}
+
+video, canvas, #frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: auto;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+}
+
+#frame {
+  pointer-events: none;
+  z-index: 10;
+}
+
+#capture-button {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  padding: 10px 20px;
+  font-size: 18px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.8);
+  border: none;
+}
+
+#share-area {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  text-align: center;
+  pointer-events: auto;
+  color: #fff;
+}
+#instagram-button {
+  padding: 8px 16px;
+  font-size: 16px;
+  border-radius: 8px;
+  background: #E1306C;
+  color: #fff;
+  border: none;
+  margin-top: 5px;
+}
